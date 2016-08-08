@@ -20,9 +20,9 @@
 
 * [Block](#Block)
     * [new Block(parent, start, token)](#new_Block_new)
-    * [.addStatement(statement, values)](#Block+addStatement)
+    * [.addStatement(statement, values)](#Block+addStatement) ⇒ <code>[Block](#Block)</code>
     * [.parent()](#Block+parent) ⇒ <code>[Block](#Block)</code>
-    * [.addBlock(token)](#Block+addBlock)
+    * [.addBlock(token)](#Block+addBlock) ⇒ <code>[Block](#Block)</code>
     * [.toString(depth, delimiter)](#Block+toString) ⇒ <code>String</code>
 
 <a name="new_Block_new"></a>
@@ -39,10 +39,11 @@ Block datatype. Has block information as wellas methods to dynamically add to i
 
 <a name="Block+addStatement"></a>
 
-### block.addStatement(statement, values)
+### block.addStatement(statement, values) ⇒ <code>[Block](#Block)</code>
 Adds a statement to current block.
 
 **Kind**: instance method of <code>[Block](#Block)</code>  
+**Returns**: <code>[Block](#Block)</code> - Current block.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -58,10 +59,11 @@ Returns parent of current block. Otherwise returns itself.
 **Returns**: <code>[Block](#Block)</code> - Parent of current block, or current block.  
 <a name="Block+addBlock"></a>
 
-### block.addBlock(token)
+### block.addBlock(token) ⇒ <code>[Block](#Block)</code>
 Adds a child Block to the current Block.
 
 **Kind**: instance method of <code>[Block](#Block)</code>  
+**Returns**: <code>[Block](#Block)</code> - New block.  
 
 | Param | Type | Description |
 | --- | --- | --- |

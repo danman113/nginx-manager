@@ -172,6 +172,7 @@ function Block( parent, start, token ) {
  * @param {String} statement Token for statement.
  * @param {Mixed} values  Array of values for statement, or a continuing
  * list.
+ * @return {Block} Current block.
  */
 Block.prototype.addStatement = function( statement, values ) {
 
@@ -207,6 +208,7 @@ Block.prototype.parent = function( ) {
 /**
  * Adds a child Block to the current Block.
  * @param {Block} token Token for new Block.
+ * @return {Block} New block.
  */
 Block.prototype.addBlock = function( token ) {
 
