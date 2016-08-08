@@ -1,0 +1,19 @@
+{
+  "name": "nginx-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nginxm.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danman113/nginx-manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danman113/nginx-manager/issues"
+  },
+  "homepage": "https://github.com/danman113/nginx-manager#readme"
+}
