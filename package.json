@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/danman113/nginx-manager/issues"
   },
-  "homepage": "https://github.com/danman113/nginx-manager#readme"
+  "homepage": "https://github.com/danman113/nginx-manager#readme",
+  "dependencies": {
+    "fs": "0.0.2"
+  }
 }

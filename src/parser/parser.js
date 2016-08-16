@@ -1,5 +1,6 @@
 module.exports = {};
 module.exports.parse = parse;
+module.exports.Block = Block;
 module.exports.newBlock = function( ) { return parse( '' ); };
 
 //Fix if statement positions
@@ -83,7 +84,6 @@ function parseStatements( localScope ) {
 		delete localScope.string;
 
 	}
-
 
 }
 
