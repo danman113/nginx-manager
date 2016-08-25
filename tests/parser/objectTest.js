@@ -1,4 +1,4 @@
-var scopeParse = require( '../index.js' ).parse;
+var scopeParse = require( '../../index.js' ).parse;
 var fs = require( 'fs' );
 var nginx = fs.readFileSync( 'example.conf', 'utf8' );
 var testAmount = 1000;

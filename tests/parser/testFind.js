@@ -1,4 +1,4 @@
-var nginx = require( '../index.js' );
+var nginx = require( '../../index.js' );
 var assert = require( 'assert' )
 
 // Creates our base block of nginx
@@ -29,6 +29,11 @@ var images = s.addBlock( 'location ~* \\.(jpg|jpeg|gif)$' );
 images.addStatement( 'access_log', [ 'var/log/nignx-images.log', 'download' ] ).addStatement( 'root', '/www/images' );
 
 console.log( b.toString() );
+console.time( 'search' )
+for (var i = 0; i < 10000; i++) {
+    b.find( 'location /' );
+}
+console.timeEnd( 'search' );
 
 var findHome = b.find( 'location /' );
 

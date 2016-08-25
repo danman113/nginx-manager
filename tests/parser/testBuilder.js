@@ -1,6 +1,6 @@
 var fs = require( 'fs' );
 
-var nginx = require( '../index.js' );
+var nginx = require( '../../index.js' );
 
 // Creates our base block of nginx
 var b = nginx.newBlock();
