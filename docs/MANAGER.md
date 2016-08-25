@@ -19,7 +19,7 @@ sites in it.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config | <code>Object</code> | Config file. Defaults: \n                         nginxPath: '/usr/sbin/nginx'                         sitePath: '/etc/nginx/sites-available/'                         symlinkPath: '/etc/nginx/sites-enabled/' |
+| config | <code>Object</code> | Config file. Defaults: <br/>                         nginxPath: '/usr/sbin/nginx'<br/>                         sitePath: '/etc/nginx/sites-available/'<br/>                         symlinkPath: '/etc/nginx/sites-enabled/' |
 
 <a name="manager+addSite"></a>
 

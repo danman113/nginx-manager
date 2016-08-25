@@ -34,9 +34,9 @@ NginxManagerError.prototype.constructor = NginxManagerError;
  * Main Manager class. Set a main directory and you can easily add and edit
  * sites in it.
  * @class
- * @param  {Object} config Config file. Defaults: \n
- *                         nginxPath: '/usr/sbin/nginx'
- *                         sitePath: '/etc/nginx/sites-available/'
+ * @param  {Object} config Config file. Defaults: <br/>
+ *                         nginxPath: '/usr/sbin/nginx'<br/>
+ *                         sitePath: '/etc/nginx/sites-available/'<br/>
  *                         symlinkPath: '/etc/nginx/sites-enabled/'
  */
 function manager( config ) {
