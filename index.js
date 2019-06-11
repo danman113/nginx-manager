@@ -2,7 +2,7 @@ var parser = require( './src/parser/parser.js' );
 var manager = require( './src/manager/manager.js' );
 
 var _export = {
-    parse: parse.parse,
+    parse: parser.parse,
     newBlock: parser.newBlock,
     Manager: manager
 }
