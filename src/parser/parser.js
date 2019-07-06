@@ -1,91 +1,83 @@
-module.exports = {};
-module.exports.parse = parse;
-module.exports.newBlock = function( ) { return parse( '' ); };
-module.exports.Block = Block;
+var _export = {
+  parse: parse,
+  newBlock: function() {
+    return parse("");
+  },
+  Block: Block
+};
 
-var Block = require( './block.js' );
+module.exports = _export;
+
+var Block = require("./block.js");
 
 //Fix if statement positions
 
-function endScope( localScope, str, offset ) {
+function endScope(localScope, str, offset) {
+  // Creates string attribute, then purges all local blocks.
+  if (offset === undefined) offset = 1;
+  localScope.string = str.substr(
+    localScope.start + offset,
+    localScope.end - localScope.start - 1
+  );
+  localScope.token = str
+    .substr(localScope.scopeStart, localScope.start - localScope.scopeStart)
+    .trim();
+  var children = localScope.children;
+  for (var x = children.length - 1; x >= 0; x--) {
+    localScope.string =
+      localScope.string.substr(
+        0,
+        children[x].scopeStart - localScope.start + 1
+      ) +
+      localScope.string.substr(
+        children[x].end - localScope.start + 1,
+        localScope.string.length
+      );
+  }
 
-	// Creates string attribute, then purges all local blocks.
-	if ( offset === undefined ) offset = 1;
-	localScope.string = str.substr(
-		localScope.start + offset,
-		localScope.end - localScope.start - 1
-	);
-	localScope.token = str.substr(
-		localScope.scopeStart,
-		localScope.start - localScope.scopeStart
-	).trim();
-	var children = localScope.children;
-	for ( var x = children.length - 1; x >= 0; x -- ) {
-
-		localScope.string =
-		localScope.string.substr( 0, children[ x ].scopeStart - localScope.start + 1 ) +
-		localScope.string.substr( children[ x ].end - localScope.start + 1, localScope.string.length );
-
-	}
-
-	parseStatements( localScope );
-
+  parseStatements(localScope);
 }
 
-function parseStatements( localScope ) {
+function parseStatements(localScope) {
+  localScope.statements = [];
+  var string = localScope.string.substr(0, localScope.string.length);
+  var valid = true;
+  var lastComment = string.length - 1;
 
-	localScope.statements = [];
-	var string = localScope.string.substr( 0, localScope.string.length );
-	var valid = true;
-	var lastComment = string.length - 1;
+  // Gets rid of all comments. Iterates through it backwards, keeping track
+  // of the last newline, and deletes up to that point when it finds a comment.
+  for (var i = string.length - 1; i >= 0; i--) {
+    if (string[i] == "\n") {
+      lastComment = i;
+    } else if (string[i] == "#") {
+      string = string.substr(0, i) + string.substr(lastComment, string.length);
+    }
+  }
 
-	// Gets rid of all comments. Iterates through it backwards, keeping track
-	// of the last newline, and deletes up to that point when it finds a comment.
-	for ( var i = string.length - 1; i >= 0; i -- ) {
+  var lastDelimiter = 0;
 
-		if ( string[ i ] == '\n' ) {
+  // Iterates through string, grabbing everything after the last delimiter,
+  // and then parsing the contents into a statement.
+  for (var i = 0; i < string.length; i++) {
+    if (string[i] == ";") {
+      var statement = string.substr(lastDelimiter, i - lastDelimiter).trim();
+      lastDelimiter = i + 1;
+      var spaceIndex = statement.indexOf(" ");
+      if (spaceIndex >= 0) {
+        localScope.addStatement(
+          statement.substr(0, spaceIndex).trim(),
+          statement
+            .substr(spaceIndex + 1, statement.length)
+            .trim()
+            .split(" ")
+        );
+      }
+    }
+  }
 
-			lastComment	= i;
-
-		} else if ( string[ i ] == '#' ) {
-
-			string = string.substr( 0, i ) + string.substr( lastComment, string.length );
-
-		}
-
-	}
-
-	var lastDelimiter = 0;
-
-	// Iterates through string, grabbing everything after the last delimiter,
-	// and then parsing the contents into a statement.
-	for ( var i = 0; i < string.length; i ++ ) {
-
-		if ( string[ i ] == ';' ) {
-
-			var statement = string.substr( lastDelimiter, i - lastDelimiter ).trim();
-			lastDelimiter = i + 1;
-			var spaceIndex = statement.indexOf( ' ' );
-			if ( spaceIndex >= 0 ) {
-
-				localScope.addStatement(
-					statement.substr( 0, spaceIndex ).trim(),
-					statement.substr( spaceIndex + 1, statement.length ).trim().split( ' ' )
-				);
-
-			}
-
-		}
-
-	}
-
-	if ( ! localScope.debug ) {
-
-		delete localScope.string;
-
-	}
-
-
+  if (!localScope.debug) {
+    delete localScope.string;
+  }
 }
 
 /**
@@ -95,55 +87,45 @@ function parseStatements( localScope ) {
  *         				  invalid Nginx Conf.
  * @return {Block}      A Block.
  */
-function parse( str ) {
+function parse(str) {
+  // Base Empty Start Block.
+  var scope = new Block(null, 0);
+  var localScope = scope;
+  var lastDelimiter = 0;
+  for (var i = 0; i < str.length; i++) {
+    // Adds a child Block when it encounters a {.
+    // Makes said child scope the local scope.
+    // Uses lastDelimiter to find the token.
+    if (str[i] == "{") {
+      var childScope = new Block(localScope, i);
+      childScope.start = i;
+      childScope.scopeStart = lastDelimiter;
+      localScope.children.push(childScope);
+      localScope = childScope;
 
-	// Base Empty Start Block.
-	var scope = new Block( null, 0 );
-	var localScope = scope;
-	var lastDelimiter = 0;
-	for ( var i = 0; i < str.length; i ++ ) {
+      // Ends the current scope.
+      // Also counts as a delimiter.
+    } else if (str[i] == "}") {
+      lastDelimiter = i + 1;
+      localScope.end = i;
 
-		// Adds a child Block when it encounters a {.
-		// Makes said child scope the local scope.
-		// Uses lastDelimiter to find the token.
-		if ( str[ i ] == '{' ) {
+      endScope(localScope, str, 1);
 
-			var childScope = new Block( localScope, i );
-			childScope.start = i;
-			childScope.scopeStart = lastDelimiter;
-			localScope.children.push( childScope );
-			localScope = childScope;
+      localScope = localScope.parent;
+    } else if (str[i] == ";") {
+      lastDelimiter = i + 1;
+    }
+  }
 
-		// Ends the current scope.
-		// Also counts as a delimiter.
-		} else if ( str[ i ] == '}' ) {
+  // Ends the global scope.
+  lastDelimiter = i + 1;
+  localScope.end = i;
 
-			lastDelimiter = i + 1;
-			localScope.end = i;
+  endScope(localScope, str, 0);
 
-			endScope( localScope, str, 1 );
+  // If the final scope is not the current scope,
+  // There's an error.
+  if (localScope.parent !== null) throw new Error("No Valid Closing Brace.");
 
-			localScope = localScope.parent;
-
-		} else if ( str[ i ] == ';' ) {
-
-			lastDelimiter = i + 1;
-
-		}
-
-	}
-
-	// Ends the global scope.
-	lastDelimiter = i + 1;
-	localScope.end = i;
-
-	endScope( localScope, str, 0 );
-
-	// If the final scope is not the current scope,
-	// There's an error.
-	if ( localScope.parent !== null )
-		throw new Error( "No Valid Closing Brace." );
-
-	return scope;
-
+  return scope;
 }
